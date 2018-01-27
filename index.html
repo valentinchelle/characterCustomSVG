@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="copyright">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <script src="dist/snap.svg-min.js"></script>
+    <script src="src/jscolor.js"></script>
+
+</head>
+
+<body style="background-color:#BEE6FC">
+    <div class="col s12 center">
+        <svg id="svg" width="700px" height="700px"></svg>
+    </div>
+    <div class="col s12 center">
+    <button class="btn jscolor {valueElement:'chosen-value', onFineChange:'setColorclothes1(this)'}">
+		Pick Clothes 1 Color
+    </button>
+    <button class="btn jscolor {valueElement:'chosen-value', onFineChange:'setColorclothes2(this)'}">
+        Pick Clothes 2 Color
+    </button>
+        <button class="btn black" onClick="changeNose()"> Change Nose</button>
+    </div>
+</body>
+
+<script>
+    var s1 = Snap("#svg");
+    var drawingZone = "#svg";
+    var character;
+    var clothes1;
+    var clothes2;
+    var head;
+    var chest;
+    var glasses;
+    var nose;
+    Snap.load("character.svg", function (f) {
+        // We save the character object inside "character".
+        var character = f;
+        // We put it on the screen.
+        s1.append(character);
+        // We go into the main function.
+        main();
+    });
+
+    function initialization(zone) {
+        // When a  svg file is saved, the hidden layers get the display attribute. <object display="none"  style=""></object>
+        // But when you try to unveil of those layers, you do : element.attr({'display':''}) and it adds display:'' in the style attribute.
+        // It doesn't change anything because the attribute still exists. 
+        // That's why we need to manually change the attribute display into a css property.
+        $("[display='none'").each(function (element) {
+            $(this).removeAttr("display").hide();
+        });
+
+
+
+    }
+    function breath(objet) {
+        var temps = 500;
+        amplitude = 5;
+        var firstCallback = function () {
+
+        }
+        var posstart = objet.attr('cy');
+        objet.animate({ cy: posstart + amplitude }, temps, mina.linear, function () {
+
+            objet.animate({ cy: posstart - 2 * amplitude }, temps, mina.linear, function () {
+                setTimeout(function () {
+                    objet.animate({ cy: posstart }, temps, function () { });
+                }, 100);
+            });
+
+
+        });
+        setTimeout(function () {
+            breath(objet);
+        }, 4 * temps);
+
+    };
+    
+    function main() {
+        // We first have to initialize the svg file.
+        initialization(drawingZone);
+        // We load all the useful stuff we will need.
+        character = Snap.select("#character");
+        head = character.select("#Head");
+        chest = character.select("#Chest");
+        glasses = head.select("#Glasses");
+        nose = head.select("#Nose");
+        // We select the clothes by filtering with a color.
+        clothes1 = character.selectAll("[fill='#61265E']");
+        clothes2 = character.selectAll("[fill='#008790']");
+
+        // We launch a loop to make the body breath by going up and down.
+        breath(chest.select("circle"));
+
+
+    };
+
+
+
+
+    function setColorclothes1(picker) {
+        // It is called when the button is pressed. We retrieve the color value and change the clothes in consequence.
+        clothes1.attr({ fill: "#" + picker.toString() });
+    }
+
+    function setColorclothes2(picker) {
+        // Same for the secondary clothes.
+        clothes2.attr({ fill: "#" + picker.toString() });
+    }
+    function changeNose() {
+        if (nose.select("#b").attr('display') == 'none') {
+            nose.select("#a").attr({ 'display': 'none' });
+            nose.select("#b").attr({ 'display': '' });
+        } else {
+            nose.select("#b").attr({ 'display': 'none' });
+            nose.select("#a").attr({ 'display': '' });
+        }
+
+
+    }
+</script>
+
+
+</html>
