@@ -1,4 +1,4 @@
-# characterCustomSVG
+# Character Customization
 A simple use of Snaps.svg to create a character customization system.
 You can see an example [here](http://chellestudio.fr/charactercustom/).
 
